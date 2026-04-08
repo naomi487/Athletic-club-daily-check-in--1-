@@ -196,7 +196,7 @@ export function HomePage() {
         </Card>
 
         {/* Your Life Pillars (editable) */}
-        <Card className="p-6 bg-white border-gray-200">
+        {/* <Card className="p-6 bg-white border-gray-200">
           <div className="flex items-center justify-between mb-3">
             <h3 className="font-semibold">Your Life Pillars</h3>
             <div className="text-sm text-gray-500">These are the areas we consider when computing Life Balance</div>
@@ -238,7 +238,7 @@ export function HomePage() {
               </Button>
             </div>
           </div>
-        </Card>
+        </Card> */}
 
         {/* Score Circles */}
         <Card className="p-6 bg-gradient-to-br from-pink-50 to-pink-100 border-pink-200">
