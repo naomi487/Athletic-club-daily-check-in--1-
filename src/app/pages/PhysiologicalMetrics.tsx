@@ -37,12 +37,13 @@ export function PhysiologicalMetrics() {
   const [formData, setFormData] = useState({
     hrv: '',
     sleep: '',
-    energyScore: 5,
+    moodLevel: 5,
     muscularSoreness: 5,
     jointPain: 5,
-    nervePain: 5,
     foamRollingSessions: 0,
     massageGunSessions: 0,
+    mentalState: 'neutral',
+    depressionLevel: '',
   });
   const [stretchedBodyParts, setStretchedBodyParts] = useState<Set<string>>(new Set());
 
@@ -139,23 +140,77 @@ export function PhysiologicalMetrics() {
             <div className="flex-1 h-px bg-gray-300" />
           </div>
 
-          {/* Overall Energy Score */}
+          {/* Mood Level (formerly Overall Energy Score) */}
           <Card className="p-4">
             <div className="flex items-start justify-between mb-3">
-              <Label className="text-sm font-medium">Overall Energy Score</Label>
-              <span className="text-sm font-semibold text-blue-600">{formData.energyScore}/10</span>
+              <Label className="text-sm font-medium">Mood Level</Label>
+              <span className="text-sm font-semibold text-blue-600">{formData.moodLevel}/10</span>
             </div>
             <Slider
-              value={[formData.energyScore]}
-              onValueChange={(value) => updateSlider('energyScore', value)}
+              value={[formData.moodLevel]}
+              onValueChange={(value) => updateSlider('moodLevel', value)}
               min={0}
               max={10}
               step={1}
               className="mb-2"
             />
             <div className="flex justify-between text-xs text-gray-500">
-              <span>Completely drained</span>
-              <span>Fully energized</span>
+              <span>Very low</span>
+              <span>Very high</span>
+            </div>
+          </Card>
+
+          {/* General Mental State (emoji selection) */}
+          <Card className="p-4">
+            <div className="flex items-start justify-between mb-3">
+              <Label className="text-sm font-medium">General Mental State</Label>
+              <span className="text-xs text-gray-500">Tap an emoji</span>
+            </div>
+            <div className="flex items-center gap-4">
+              {(['sad', 'neutral', 'happy'] as const).map((state) => {
+                const label = state === 'sad' ? '😟' : state === 'neutral' ? '😐' : '😊';
+                const selected = formData.mentalState === state;
+                return (
+                  <button
+                    key={state}
+                    type="button"
+                    onClick={() => setFormData({ ...formData, mentalState: state })}
+                    aria-pressed={selected}
+                    aria-label={state}
+                    className={`text-2xl w-12 h-12 rounded-md flex items-center justify-center text-center transition-colors border ${
+                      selected ? 'bg-blue-500 text-white border-blue-500' : 'bg-white text-gray-700 border-gray-200'
+                    }`}
+                  >
+                    {label}
+                  </button>
+                );
+              })}
+            </div>
+          </Card>
+
+          {/* Depression level */}
+          <Card className="p-4">
+            <div className="flex items-start justify-between mb-3">
+              <Label className="text-sm font-medium">Depression</Label>
+              <span className="text-xs text-gray-500">Did you feel depressed today?</span>
+            </div>
+            <div className="flex items-center gap-3">
+              {(['yes', 'some', 'no'] as const).map((opt) => {
+                const selected = formData.depressionLevel === opt;
+                const label = opt === 'yes' ? 'Yes' : opt === 'some' ? 'Some' : 'No';
+                return (
+                  <button
+                    key={opt}
+                    type="button"
+                    onClick={() => setFormData({ ...formData, depressionLevel: opt })}
+                    className={`px-3 py-1 rounded-md border text-sm transition-colors ${
+                      selected ? 'bg-red-500 text-white border-red-500' : 'bg-white text-gray-700 border-gray-200'
+                    }`}
+                  >
+                    {label}
+                  </button>
+                );
+              })}
             </div>
           </Card>
 
@@ -240,25 +295,7 @@ export function PhysiologicalMetrics() {
             </div>
           </Card>
 
-          {/* Nerve Pain */}
-          <Card className="p-4">
-            <div className="flex items-start justify-between mb-3">
-              <Label className="text-sm font-medium">Nerve Pain Level</Label>
-              <span className="text-sm font-semibold text-blue-600">{formData.nervePain}/10</span>
-            </div>
-            <Slider
-              value={[formData.nervePain]}
-              onValueChange={(value) => updateSlider('nervePain', value)}
-              min={0}
-              max={10}
-              step={1}
-              className="mb-2"
-            />
-            <div className="flex justify-between text-xs text-gray-500">
-              <span>No pain</span>
-              <span>Severe pain</span>
-            </div>
-          </Card>
+          {/* Nerve Pain removed as requested */}
 
           {/* Foam Rolling */}
           <Card className="p-4">
