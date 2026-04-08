@@ -192,21 +192,52 @@ export function HomePage() {
         {/* Score Circles */}
         <Card className="p-6 bg-gradient-to-br from-pink-50 to-pink-100 border-pink-200">
           <h3 className="font-semibold mb-4">Your Scores</h3>
-          <div className="flex justify-around">
-            <ScoreCircle
-              score={7.8}
-              maxScore={10}
-              label="Physiological"
-              icon={<Activity className="w-5 h-5" />}
-              color="text-green-500"
-            />
-            <ScoreCircle
-              score={6.5}
-              maxScore={10}
-              label="Life Balance"
-              icon={<Scale className="w-5 h-5" />}
-              color="text-blue-500"
-            />
+          {/* Three life sub-scores that combine into Life Balance */}
+          <div className="flex items-center justify-center gap-6">
+            <div className="flex items-center gap-4">
+              {/* Sub-scores */}
+              <ScoreCircle
+                score={7.0}
+                maxScore={10}
+                label="Personal"
+                icon={<Activity className="w-5 h-5" />}
+                color="text-emerald-500"
+              />
+              <ScoreCircle
+                score={6.5}
+                maxScore={10}
+                label="Athletic"
+                icon={<Target className="w-5 h-5" />}
+                color="text-pink-500"
+              />
+              <ScoreCircle
+                score={6.0}
+                maxScore={10}
+                label="Work"
+                icon={<Scale className="w-5 h-5" />}
+                color="text-blue-500"
+              />
+            </div>
+
+            {/* Equals sign */}
+            <div className="text-2xl font-bold text-gray-500">=</div>
+
+            {/* Total life balance (average of the three) */}
+            {(() => {
+              const personal = 7.0;
+              const athletic = 6.5;
+              const work = 6.0;
+              const total = Number(((personal + athletic + work) / 3).toFixed(1));
+              return (
+                <ScoreCircle
+                  score={total}
+                  maxScore={10}
+                  label="Life Balance"
+                  icon={<Scale className="w-5 h-5" />}
+                  color="text-blue-500"
+                />
+              );
+            })()}
           </div>
         </Card>
 
