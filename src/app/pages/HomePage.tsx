@@ -76,6 +76,12 @@ export function HomePage() {
   const [chatMessage, setChatMessage] = useState('');
   const [showCombinedGraph, setShowCombinedGraph] = useState(false);
   const [showWeatherPopup, setShowWeatherPopup] = useState(false);
+  const [pillars, setPillars] = useState<string[]>([
+    'Endurance Athlete',
+    'Machine Learning Technician',
+    'Dog Mom',
+  ]);
+  const [newPillar, setNewPillar] = useState('');
 
   const handleStartCheckIn = () => {
     navigate('/vitals');
@@ -189,9 +195,57 @@ export function HomePage() {
           </Button>
         </Card>
 
+        {/* Your Life Pillars (editable) */}
+        <Card className="p-6 bg-white border-gray-200">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="font-semibold">Your Life Pillars</h3>
+            <div className="text-sm text-gray-500">These are the areas we consider when computing Life Balance</div>
+          </div>
+
+          <div className="space-y-3">
+            <div className="flex items-center gap-4">
+              {pillars.map((p, idx) => (
+                <div key={p} className="flex items-center gap-2 bg-gray-50 px-3 py-1 rounded-full border">
+                  <span className="text-sm">{p}</span>
+                  <button
+                    onClick={() => setPillars((prev) => prev.filter((_, i) => i !== idx))}
+                    className="text-xs text-red-500 hover:underline"
+                    aria-label={`Delete ${p}`}
+                  >
+                    <span className="sr-only">Delete</span>
+                    ×
+                  </button>
+                </div>
+              ))}
+            </div>
+
+            <div className="flex items-center gap-2 mt-3">
+              <Input
+                value={newPillar}
+                onChange={(e) => setNewPillar(e.target.value)}
+                placeholder="Add a new pillar (e.g. Parent, Researcher)"
+                className="flex-1"
+              />
+              <Button
+                onClick={() => {
+                  if (newPillar.trim()) {
+                    setPillars((prev) => [...prev, newPillar.trim()]);
+                    setNewPillar('');
+                  }
+                }}
+              >
+                Add
+              </Button>
+            </div>
+          </div>
+        </Card>
+
         {/* Score Circles */}
         <Card className="p-6 bg-gradient-to-br from-pink-50 to-pink-100 border-pink-200">
           <h3 className="font-semibold mb-4">Your Scores</h3>
+          <p className="text-sm text-gray-600 mb-3">
+            You are an athlete, but we know other areas of your life are just as important. Your current pillars are: <strong>Endurance Athlete</strong>, <strong>Machine Learning Technician</strong>, and <strong>Dog Mom</strong>.
+          </p>
           {/* Three life sub-scores that combine into Life Balance */}
           <div className="flex items-center justify-center gap-6">
             <div className="flex items-center gap-4">

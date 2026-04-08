@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
-import { ChevronLeft, TrendingUp, Briefcase, Heart, AlertCircle } from 'lucide-react';
+import { ChevronLeft, TrendingUp, Briefcase, Heart, AlertCircle, X } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Card } from '../components/ui/card';
 import { Input } from '../components/ui/input';
@@ -17,12 +17,18 @@ import {
   AlertDialogTitle,
 } from '../components/ui/alert-dialog';
 
+type Subcategory = {
+  id: string;
+  name: string;
+  time: string;
+  quality: number;
+};
+
 type Pillar = {
   id: string;
   name: string;
   icon: React.ReactNode;
-  time: string;
-  quality: number;
+  subcategories: Subcategory[];
   color: string;
 };
 
@@ -32,41 +38,77 @@ export function EmotionalPillars() {
   const [pillars, setPillars] = useState<Pillar[]>([
     {
       id: 'personal',
-      name: 'Personal Life',
+      name: 'Dog Mom',
       icon: <Heart className="w-5 h-5" />,
-      time: '',
-      quality: 5,
+      subcategories: [
+        { id: 'personal-main', name: 'Personal', time: '', quality: 5 },
+      ],
       color: 'bg-pink-100 text-pink-600',
     },
     {
       id: 'work',
-      name: 'Work Life',
+      name: 'Machine Learning Technician',
       icon: <Briefcase className="w-5 h-5" />,
-      time: '',
-      quality: 5,
+      subcategories: [
+        { id: 'work-main', name: 'Researcher', time: '', quality: 5 },
+        { id: 'work-second', name: 'Data Collecter', time: '', quality: 5 },
+
+      ],
       color: 'bg-blue-100 text-blue-600',
     },
     {
       id: 'athletic',
-      name: 'Athletic Life',
+      name: 'Endurance Athlete',
       icon: <TrendingUp className="w-5 h-5" />,
-      time: '',
-      quality: 5,
+      subcategories: [
+        { id: 'athletic-main', name: 'Swimmer', time: '', quality: 5 },
+        { id: 'athletic-second', name: 'Road Biker', time: '', quality: 5 },
+        { id: 'athletic-third', name: 'Road Runner', time: '', quality: 5 },
+
+      ],
       color: 'bg-green-100 text-green-600',
     },
   ]);
 
-  const updatePillarTime = (id: string, time: string) => {
-    setPillars(pillars.map((p) => (p.id === id ? { ...p, time } : p)));
+  const updateSubcategoryTime = (pillarId: string, subId: string, time: string) => {
+    setPillars((prev) =>
+      prev.map((p) =>
+        p.id === pillarId
+          ? { ...p, subcategories: p.subcategories.map((s) => (s.id === subId ? { ...s, time } : s)) }
+          : p,
+      ),
+    );
   };
 
-  const updatePillarQuality = (id: string, quality: number) => {
-    setPillars(pillars.map((p) => (p.id === id ? { ...p, quality } : p)));
+  const updateSubcategoryQuality = (pillarId: string, subId: string, quality: number) => {
+    setPillars((prev) =>
+      prev.map((p) =>
+        p.id === pillarId
+          ? { ...p, subcategories: p.subcategories.map((s) => (s.id === subId ? { ...s, quality } : s)) }
+          : p,
+      ),
+    );
   };
+
+  const addSubcategory = (pillarId: string, name: string) => {
+    const id = `${name.toLowerCase().replace(/\s+/g, '-')}-${Date.now()}`;
+    setPillars((prev) =>
+      prev.map((p) => (p.id === pillarId ? { ...p, subcategories: [...p.subcategories, { id, name, time: '', quality: 5 }] } : p)),
+    );
+  };
+
+  const removeSubcategory = (pillarId: string, subId: string) => {
+    setPillars((prev) => prev.map((p) => (p.id === pillarId ? { ...p, subcategories: p.subcategories.filter((s) => s.id !== subId) } : p)));
+  };
+  
+  const [newSubNames, setNewSubNames] = useState<Record<string, string>>({});
+  const [newPillarName, setNewPillarName] = useState('');
 
   const calculateWellbeingScore = () => {
-    const totalTime = pillars.reduce((sum, p) => sum + (parseFloat(p.time) || 0), 0);
-    const avgQuality = pillars.reduce((sum, p) => sum + p.quality, 0) / pillars.length;
+    // Sum times across all subcategories
+    const allSubcategories = pillars.flatMap((p) => p.subcategories);
+    const totalTime = allSubcategories.reduce((sum, s) => sum + (parseFloat(s.time) || 0), 0);
+    const avgQuality = allSubcategories.length ? allSubcategories.reduce((sum, s) => sum + s.quality, 0) / allSubcategories.length : 0;
     
     // Simple scoring algorithm
     const timeScore = Math.min(totalTime / 24, 1) * 50;
@@ -119,62 +161,135 @@ export function EmotionalPillars() {
             <div className="text-center">
               <p className="text-sm text-gray-600 mb-2">Balance Score</p>
               <div className="text-4xl font-bold text-blue-600 mb-1">{wellbeingScore}</div>
-              <p className="text-xs text-gray-500">Based on time and quality across pillars</p>
+                <p className="text-xs text-gray-500">Based on time and quality across pillars</p>
+                <p className="text-sm text-gray-600 mt-3">
+                  You are an athlete, but we know other areas of your life are just as important. Your current pillars are: <strong>Dog Mom</strong>, <strong>Machine Learning Technician</strong>, and <strong>Endurance Athlete</strong>.
+                </p>
             </div>
           </Card>
 
           <div className="space-y-4">
             <h2 className="font-semibold text-sm text-gray-700 px-1">Your Life Pillars</h2>
             
-            {pillars.map((pillar) => (
+            {pillars.map((pillar, idx) => (
               <Card key={pillar.id} className="p-4">
                 <div className="flex items-center gap-3 mb-4">
                   <div className={`w-10 h-10 rounded-full flex items-center justify-center ${pillar.color}`}>
                     {pillar.icon}
                   </div>
-                  <h3 className="font-medium">{pillar.name}</h3>
+                  <h3 className="font-medium flex-1">{pillar.name}</h3>
+                  <button
+                    type="button"
+                    onClick={() => setPillars((prev) => prev.filter((_, i) => i !== idx))}
+                    className="p-1 rounded-full text-gray-500 hover:bg-gray-100"
+                    aria-label={`Delete ${pillar.name}`}
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
                 </div>
 
-                {/* Time Spent */}
+                {/* Subcategories */}
                 <div className="mb-4">
-                  <Label htmlFor={`${pillar.id}-time`} className="text-sm text-gray-600 mb-2 block">
-                    Time Spent Today
-                  </Label>
-                  <div className="flex items-center gap-2">
-                    <Input
-                      id={`${pillar.id}-time`}
-                      type="number"
-                      step="0.5"
-                      placeholder="0"
-                      value={pillar.time}
-                      onChange={(e) => updatePillarTime(pillar.id, e.target.value)}
-                      className="flex-1"
-                    />
-                    <span className="text-sm text-gray-600">hours</span>
-                  </div>
-                </div>
+                  <div className="text-sm font-medium mb-2">Categories to track under this pillar</div>
+                  <div className="space-y-3">
+                    {pillar.subcategories.map((sub) => (
+                      <div key={sub.id} className="p-3 bg-gray-50 rounded-md border">
+                        <div className="flex items-center justify-between mb-2">
+                          <div className="font-medium">{sub.name}</div>
+                          <button
+                            type="button"
+                            onClick={() => removeSubcategory(pillar.id, sub.id)}
+                            className="p-1 rounded-full text-gray-500 hover:bg-gray-100"
+                            aria-label={`Delete ${sub.name}`}
+                          >
+                            <X className="w-4 h-4" />
+                          </button>
+                        </div>
 
-                {/* Quality Rating */}
-                <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <Label className="text-sm text-gray-600">Quality of Time</Label>
-                    <span className="text-sm font-semibold text-blue-600">{pillar.quality}/10</span>
-                  </div>
-                  <Slider
-                    value={[pillar.quality]}
-                    onValueChange={(value) => updatePillarQuality(pillar.id, value[0])}
-                    min={0}
-                    max={10}
-                    step={1}
-                    className="mb-2"
-                  />
-                  <div className="flex justify-between text-xs text-gray-500">
-                    <span>Poor quality</span>
-                    <span>Excellent quality</span>
+                        <div className="flex items-center gap-2 mb-2">
+                          <Input
+                            id={`${pillar.id}-${sub.id}-time`}
+                            type="number"
+                            step="0.5"
+                            placeholder="0"
+                            value={sub.time}
+                            onChange={(e) => updateSubcategoryTime(pillar.id, sub.id, e.target.value)}
+                            className="flex-1"
+                          />
+                          <span className="text-sm text-gray-600">hours</span>
+                        </div>
+
+                        <div>
+                          <div className="flex items-center justify-between mb-2">
+                            <Label className="text-sm text-gray-600">Quality of Time</Label>
+                            <span className="text-sm font-semibold text-blue-600">{sub.quality}/10</span>
+                          </div>
+                          <Slider
+                            value={[sub.quality]}
+                            onValueChange={(value) => updateSubcategoryQuality(pillar.id, sub.id, value[0])}
+                            min={0}
+                            max={10}
+                            step={1}
+                            className="mb-2"
+                          />
+                          <div className="flex justify-between text-xs text-gray-500">
+                            <span>Poor quality</span>
+                            <span>Excellent quality</span>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+
+                    <div className="flex items-center gap-2 mt-2">
+                      <Input
+                        value={newSubNames[pillar.id] || ''}
+                        onChange={(e) => setNewSubNames((prev) => ({ ...prev, [pillar.id]: e.target.value }))}
+                        placeholder="Add a new category to track"
+                        className="flex-1"
+                      />
+                      <Button
+                        onClick={() => {
+                          const name = (newSubNames[pillar.id] || '').trim();
+                          if (!name) return;
+                          addSubcategory(pillar.id, name);
+                          setNewSubNames((prev) => ({ ...prev, [pillar.id]: '' }));
+                        }}
+                      >
+                        Add
+                      </Button>
+                    </div>
                   </div>
                 </div>
               </Card>
-            ))}
+              ))}
+
+            <div className="p-4 bg-white border rounded-lg">
+              <div className="flex items-center gap-2">
+                <Input
+                  value={newPillarName}
+                  onChange={(e) => setNewPillarName(e.target.value)}
+                  placeholder="Add a new pillar (e.g. Parent, Researcher)"
+                  className="flex-1"
+                />
+                <Button
+                  onClick={() => {
+                    const name = newPillarName.trim();
+                    if (!name) return;
+                    const newPillar: Pillar = {
+                      id: `${name.toLowerCase().replace(/\s+/g, '-')}-${Date.now()}`,
+                      name,
+                      icon: <Heart className="w-5 h-5" />,
+                      subcategories: [{ id: `${name.toLowerCase().replace(/\s+/g, '-')}-main-${Date.now()}`, name, time: '', quality: 5 }],
+                      color: 'bg-gray-100 text-gray-700',
+                    };
+                    setPillars((prev) => [...prev, newPillar]);
+                    setNewPillarName('');
+                  }}
+                >
+                  Add
+                </Button>
+              </div>
+            </div>
           </div>
 
           {/* Info Card */}
