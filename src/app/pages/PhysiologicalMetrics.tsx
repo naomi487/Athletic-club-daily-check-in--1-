@@ -70,6 +70,11 @@ export function PhysiologicalMetrics() {
     alert('Import health data functionality');
   };
 
+  const handleConnectApple = () => {
+    // Placeholder for Apple Health connect flow
+    alert('Connect to Apple Health (placeholder)');
+  };
+
   const incrementSessions = (field: 'foamRollingSessions' | 'massageGunSessions') => {
     setFormData({ ...formData, [field]: formData[field] + 1 });
   };
@@ -132,11 +137,20 @@ export function PhysiologicalMetrics() {
               <Download className="w-4 h-4 mr-2" />
               Import from Device
             </Button>
+            <div className="mt-2 text-center">
+              <button
+                type="button"
+                onClick={handleConnectApple}
+                className="text-xs text-blue-600 hover:underline"
+              >
+                or connect to Apple Health
+              </button>
+            </div>
           </Card>
 
           <div className="flex items-center gap-3">
             <div className="flex-1 h-px bg-gray-300" />
-            <span className="text-xs text-gray-500 font-medium">OR ENTER MANUALLY</span>
+            <span className="text-xs text-gray-500 font-medium">ENTER MANUALLY</span>
             <div className="flex-1 h-px bg-gray-300" />
           </div>
 
