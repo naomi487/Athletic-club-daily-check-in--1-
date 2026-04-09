@@ -45,15 +45,15 @@ export function CheckInHome() {
       completed: false,
       icon: <Scale className="w-5 h-5" />,
     },
-    {
-      id: 'athletic',
-      step: 4,
-      title: 'Athletic Profile',
-      description: 'Goals, training plans, locations',
-      route: '/athletic',
-      completed: false,
-      icon: <Target className="w-5 h-5" />,
-    },
+    // {
+    //   id: 'athletic',
+    //   step: 4,
+    //   title: 'Athletic Profile',
+    //   description: 'Goals, training plans, locations',
+    //   route: '/athletic',
+    //   completed: false,
+    //   icon: <Target className="w-5 h-5" />,
+    // },
   ];
 
   const completedCount = checkInItems.filter((item) => item.completed).length;

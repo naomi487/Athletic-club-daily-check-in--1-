@@ -186,7 +186,7 @@ export function AthleticData() {
           </button>
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-1">
-              <span className="text-xs text-black-600 font-medium">STEP 4</span>
+              <span className="text-xs text-black-600 font-medium"></span>
             </div>
             <h1 className="font-semibold text-lg">Athletic Profile</h1>
             <p className="text-sm text-gray-600">Goals, training & locations</p>

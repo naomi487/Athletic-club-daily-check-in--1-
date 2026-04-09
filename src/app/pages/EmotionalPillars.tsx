@@ -120,7 +120,8 @@ export function EmotionalPillars() {
   const wellbeingScore = calculateWellbeingScore();
 
   const handleSubmit = () => {
-    navigate('/check-in');
+    // Finish the check-in flow for step 3
+    navigate('/complete');
   };
 
   const handleSkip = () => {
@@ -311,7 +312,7 @@ export function EmotionalPillars() {
             Skip
           </Button>
           <Button className="flex-1" onClick={handleSubmit}>
-            Save & Continue
+            Finish Check-In
           </Button>
         </div>
       </div>

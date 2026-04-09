@@ -113,12 +113,21 @@ export function HomePage() {
             <h1 className="text-2xl font-semibold text-white drop-shadow-md">Welcome, Athlete!</h1>
             <p className="text-sm text-white/90 mt-1">Let's optimize your performance today</p>
           </div>
-          <button
-            onClick={() => setShowWeatherPopup(true)}
-            className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-colors"
-          >
-            <Sun className="w-6 h-6 text-yellow-300" />
-          </button>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => navigate('/athletic')}
+              className="px-3 py-2 bg-white/20 text-white rounded-md hover:bg-white/30 transition-colors text-sm font-medium"
+              aria-label="Open Athlete Profile"
+            >
+              Athlete Profile
+            </button>
+            <button
+              onClick={() => setShowWeatherPopup(true)}
+              className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-colors"
+            >
+              <Sun className="w-6 h-6 text-yellow-300" />
+            </button>
+          </div>
         </div>
       </div>
 
